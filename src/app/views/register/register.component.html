@@ -2,7 +2,7 @@
 <div class="app-body">
   <main class="main d-flex align-items-center">
     <div class="container">
-        <form (ngSubmit)="onSignUp()">
+      <form (ngSubmit)="onSignUp()">
         <div class="row">
           <div class="col-md-6 mx-auto">
             <div class="card-group">
@@ -21,15 +21,45 @@
                         <i class="icon-user"></i>
                       </span>
                     </div>
+                    <input type="text" class="form-control" id="username" name="username" required placeholder="Username" [(ngModel)]='username'>
+                  </div>
+                  <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">
+                        <i class="icon-user"></i>
+                      </span>
+                    </div>
+                    <input type="text" class="form-control" id="mobile" name="mobile" required placeholder="Mobile" [(ngModel)]='mobile'>
+                  </div>
+                  <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">
+                        <i class="icon-user"></i>
+                      </span>
+                    </div>
                     <input type="text" class="form-control" id="email" name="email" required placeholder="Email" [(ngModel)]='email'>
                   </div>
                   <div class="input-group mb-4">
                     <div class="input-group-prepend">
                       <span class="input-group-text">
-                        <i class="icon-lock"></i>
+                        <i class="icon-user"></i>
                       </span>
                     </div>
                     <input type="password" required class="form-control" id="password" name="password" placeholder="Password" [(ngModel)]='password'>
+                  </div>
+                  <div class="input-group mb-4">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">
+                        <i class="icon-user"></i>
+                      </span>
+                    </div>
+                    <select required class="form-control" id="role" name="role" [(ngModel)]='role'>
+                      <option value='SELECT_ROLE'>Select Role</option>
+                      <option value='STIVI_ADMIN'>ADMIN</option>
+                      <option value='STIVI_BUILDING'>BUILDING</option>
+                      <option value='STIVI_TANANT'>TANANT</option>
+                      <option value='STIVI_GROUP'>GROUP</option>
+                    </select>
                   </div>
                   <div class="row">
                     <div class="col-6">

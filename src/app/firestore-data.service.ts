@@ -41,6 +41,25 @@ export class FirestoreDataService implements OnInit {
     return this.servicesList;
   }
 
+  registerUser(email, password, mobile, username, role) {
+    let result: any;
+    this.afs.collection('users')
+    .add({
+        'userName': username,
+        'userRole': role,
+        'userEmail': email,
+        'userMobile': mobile,
+        'usetIsDeleted': 'N',
+        'userCreateDate': new Date().getTime(),
+        'userCreateBy': 'system'
+      })
+    .then( docRef => {
+      result = 'success';
+    }).catch( error => {
+      result = 'Something went wrong';
+    });
+  }
+
   getServicesList(selectedVehicleType): Observable<any> {
     this.servicesList = this.afs.collection('service_master', ref => ref.where('vehicle_type_id',
     '==', selectedVehicleType))

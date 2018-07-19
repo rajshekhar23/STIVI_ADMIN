@@ -1,3 +1,4 @@
+import { FirestoreDataService } from './../../firestore-data.service';
 import { Router } from '@angular/router';
 import { Component } from '@angular/core';
 import { AuthService } from '../../auth.service';
@@ -12,11 +13,15 @@ export class RegisterComponent {
   username: '';
   mobile: '';
   password = '';
+  role: string;
   errorMessage = '';
   error: { name: string, message: string } = { name: '', message: '' };
   resetPassword = false;
 
-  constructor(private authService: AuthService, private router: Router) { }
+  constructor(private authService: AuthService, private router: Router, private _firestoreDataService: FirestoreDataService) {
+      this.role = 'SELECT_ROLE';
+   }
+
 
   clearErrorMessage() {
     this.errorMessage = '';
@@ -31,28 +36,37 @@ export class RegisterComponent {
 
   onSignUp(): void {
     this.clearErrorMessage();
-    if (this.validateForm(this.email, this.password)) {
-      this.authService.signUpWithEmail(this.email, this.password)
+    if (this.validateForm(this.email, this.password, this.mobile, this.username)) {
+       this.authService.signUpWithEmail(this.email, this.password)
         .then(() => {
+          this._firestoreDataService.registerUser(this.email, this.password, this.mobile, this.username, this.role);
           this.router.navigate(['/dashboard']);
         }).catch(_error => {
           this.error = _error;
           this.router.navigate(['/']);
         });
-    }
+     }
   }
 
-  validateForm(email: string, password: string): boolean {
+  validateForm(email: string, password: string, mobile: string, username: string): boolean {
+/*     if (username.length === 0) {
+      this.errorMessage = 'Please enter Username!';
+      return false;
+    }
+
+    if (mobile.length === 0) {
+      this.errorMessage = 'Please enter Mobile!';
+      return false;
+    }
+ */
     if (email.length === 0) {
       this.errorMessage = 'Please enter Email!';
       return false;
     }
-
     if (password.length === 0) {
       this.errorMessage = 'Please enter Password!';
       return false;
     }
-
     if (password.length < 6) {
       this.errorMessage = 'Password should be at least 6 characters!';
       return false;
