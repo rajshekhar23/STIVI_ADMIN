@@ -386,7 +386,11 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  constructor(private authService: AuthService) {
+  constructor(private authService: AuthService, private router: Router) {
     console.log(this.authService.authState);
+    if (this.authService.authState === null) {
+      this.router.navigate(['/']);
+    }
   }
+
 }

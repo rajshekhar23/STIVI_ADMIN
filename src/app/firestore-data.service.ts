@@ -19,13 +19,16 @@ export class FirestoreDataService implements OnInit {
   servicesList: Observable<Service[]>;
   subServicesList: Observable<SubService[]>;
   model: Model;
+  users: any;
   private vehiclesTypesList: any;
   variants: Observable<Variant[]>;
   private allBrandsByVehicleType: any;
   constructor(private afs: AngularFirestore, private db: AngularFireDatabase,
   private _loadingBar: SlimLoadingBarService) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.users = [];
+  }
 
   getAllServiceListWithoutFilter(selectedVehicleType): Observable<any> {
     this.servicesList = this.afs.collection('service_master', ref => ref.where('vehicle_type_id',
@@ -39,6 +42,18 @@ export class FirestoreDataService implements OnInit {
       });
     });
     return this.servicesList;
+  }
+
+  checkIsAdmin(email): Observable<any> {
+    this.users = this.afs.collection('users', ref => ref.where('userEmail', '==', email))
+    .snapshotChanges().map(actions => {
+      return actions.map(action => {
+        const data = action.payload.doc.data() as Service;
+        const id = action.payload.doc.id;
+        return { id, ...data };
+      });
+    });
+    return this.users;
   }
 
   registerUser(email, password, mobile, username, role) {

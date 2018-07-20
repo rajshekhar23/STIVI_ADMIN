@@ -12,6 +12,7 @@ export class AuthService {
   error: any = null;
   constructor(private afAuth: AngularFireAuth, private router: Router) {
     this.afAuth.authState.subscribe((auth) => {
+      this.afAuth.auth.setPersistence(firebase.auth.Auth.Persistence.SESSION);
       this.authState = auth;
     });
   }
@@ -44,7 +45,7 @@ export class AuthService {
     return this.afAuth.auth.createUserWithEmailAndPassword(email, password)
       .then((user) => {
         console.log(user);
-        this.authState = user;
+        this.router.navigate(['/dashboard']);
       })
       .catch(error => {
         console.log(error);
@@ -68,6 +69,7 @@ export class AuthService {
   }
 
   signOut(): void {
+    this.authState = null;
     this.afAuth.auth.signOut();
     this.router.navigate(['/']);
   }

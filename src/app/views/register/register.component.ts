@@ -1,13 +1,14 @@
+import { FirebaseAuth } from 'angularfire2';
 import { FirestoreDataService } from './../../firestore-data.service';
 import { Router } from '@angular/router';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../auth.service';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: 'register.component.html'
 })
-export class RegisterComponent {
+export class RegisterComponent implements OnInit {
   isNewUser = true;
   email = '';
   username: '';
@@ -20,8 +21,12 @@ export class RegisterComponent {
 
   constructor(private authService: AuthService, private router: Router, private _firestoreDataService: FirestoreDataService) {
       this.role = 'SELECT_ROLE';
-   }
+      console.log(this.authService.currentUserId);
+      console.log(this.authService.currentUserName);
+  }
 
+  ngOnInit() {
+  }
 
   clearErrorMessage() {
     this.errorMessage = '';
@@ -31,6 +36,8 @@ export class RegisterComponent {
   checkUserInfo() {
     if (this.authService.isUserEmailLoggedIn) {
       this.router.navigate(['/dashboard']);
+    } else {
+      this.router.navigate(['/']);
     }
   }
 
@@ -78,6 +85,7 @@ export class RegisterComponent {
   login() {
     this.router.navigate(['/login']);
   }
+
   isValidMailFormat(email: string) {
     const EMAIL_REGEXP = /^[a-z0-9!#$%&'*+\/=?^_`{|}~.-]+@[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)*$/i;
 

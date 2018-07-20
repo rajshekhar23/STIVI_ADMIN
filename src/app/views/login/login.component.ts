@@ -1,3 +1,4 @@
+import { FirestoreDataService } from './../../firestore-data.service';
 import { AuthService } from './../../auth.service';
 import { Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
@@ -11,13 +12,17 @@ export class LoginComponent implements OnInit {
   email = '';
   password = '';
   errorMessage = '';
+  users: any;
   error: { name: string, message: string } = { name: '', message: '' };
 
   resetPassword = false;
 
-  constructor(public authService: AuthService, private router: Router) { }
+  constructor(public authService: AuthService, private router: Router, private _firestoreService: FirestoreDataService) {
+  }
 
-  ngOnInit() { }
+  ngOnInit() {
+    this.users = [];
+  }
 
   checkUserInfo() {
     if (this.authService.isUserEmailLoggedIn) {
@@ -30,29 +35,15 @@ export class LoginComponent implements OnInit {
     this.error = { name: '', message: '' };
   }
 
-  register() {
-    this.router.navigate(['/register']);
-  }
-
-  onSignUp(): void {
-    this.clearErrorMessage();
-    if (this.validateForm(this.email, this.password)) {
-      this.authService.signUpWithEmail(this.email, this.password)
-        .then(() => {
-          this.router.navigate(['/dashboard']);
-        }).catch(_error => {
-          this.error = _error;
-          this.router.navigate(['/']);
-        })
-    }
-  }
-
   onLoginEmail(): void {
     this.clearErrorMessage();
 
     if (this.validateForm(this.email, this.password)) {
       this.authService.loginWithEmail(this.email, this.password)
-        .then(() => this.router.navigate(['/dashboard']))
+        .then(() => {
+          this.router.navigate(['/dashboard']);
+          this.checkIsAdmin(this.email);
+        })
         .catch(_error => {
           this.error = _error;
           this.error.message = _error.code === 'auth/user-not-found' ? 'Invalid user ' : _error.message;
@@ -61,6 +52,18 @@ export class LoginComponent implements OnInit {
     }
   }
 
+  checkIsAdmin(email) {
+    this._firestoreService.checkIsAdmin(email).subscribe(data => {
+        console.log(data);
+        data.forEach(function(data1) {
+          if (data1.userRole === 'STIVI_ADMIN') {
+            localStorage.setItem('isAdmin', 'TRUE');
+          } else {
+            localStorage.setItem('isAdmin', 'FALSE');
+          }
+        });
+    });
+  }
   validateForm(email: string, password: string): boolean {
     if (email.length === 0) {
       this.errorMessage = 'Please enter Email!';

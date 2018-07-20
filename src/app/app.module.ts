@@ -82,4 +82,4 @@ import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
   providers: [ AuthService ],
   bootstrap: [ AppComponent ]
 })
-export class AppModule { }
+export class AppModule {}
