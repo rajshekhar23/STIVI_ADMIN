@@ -37,11 +37,11 @@ export class ListServiceComponent implements OnInit {
     this.subService = {};
     this.task = {};
     this.selectedVehicleType = 'pM0luQDMCvCvDxJcedDn';
-    this._firestoreDataService.getVehicleMasterList().subscribe( data => {
+/*     this._firestoreDataService.getVehicleMasterList().subscribe( data => {
       this.vehicleTypeList = data;
       this.getServicesList();
     });
-  }
+ */  }
 
   getServicesList() {
     this._firestoreDataService.getServicesList(this.selectedVehicleType).subscribe( data => {

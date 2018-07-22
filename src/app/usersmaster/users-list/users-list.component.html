@@ -1,3 +1,86 @@
-<p>
-  users-list works!
-</p>
+<div class="animated fadeIn">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="card-header">
+          <i class="fa fa-align-justify"></i> Vehicle user List
+        </div>
+        <div class="card-body">
+          <table class="table table-bordered table-striped table-condensed table-sm">
+            <thead>
+              <tr class='text-center'>
+                <td>No.</td>
+                <td>User Name</td>
+                <td>User Email</td>
+                <td>User Mobile</td>
+                <td>User Role</td>
+                <td>User Create By</td>
+                <td>User Create At</td>
+                <td>Edit</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngIf='isUsersListEmpty'>
+                <td colspan='5' class='text-center'>No records found</td>
+              </tr>
+              <tr ng-if="usersList.length > 0" *ngFor="let row of usersList; let i = index" class='text-center'>
+                <td>{{i + 1}}</td>
+                <td>{{row.userName}}</td>
+                <td>{{row.userEmail}}</td>
+                <td>{{row.userMobile}}</td>
+                <td>{{row.userRole}}</td>
+                <td>{{row.userCreateBy}}</td>
+                <td>{{row.userCreateDate}}</td>
+                <td (click)='editUser(row, content)' class='success'>
+                  <i class="customIcons cui-pencil"></i>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <!--/.col-->
+  </div>
+</div>
+
+<!-- Modal -->
+<ng-template #content let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <b *ngIf='isUpdate'>Update User</b>
+    <b *ngIf='!isUpdate'>Add New user</b>
+    <button type="button" class="close" (click)='closeModal()'>&times;</button>
+  </div>
+  <div class="modal-body">
+    <form>
+      <div class="form-group">
+        <input type="text" class="form-control" placeholder="Enter user name" autofocus [(ngModel)]='user.userName'
+          [ngModelOptions]="{standalone: true}" name='userName' required="required">
+      </div>
+      <div class="form-group">
+        <input type="text" class="form-control" [disabled]=true placeholder="Enter user name" autofocus [(ngModel)]='user.userEmail'
+          [ngModelOptions]="{standalone: true}" name='userEmail' required="required">
+      </div>
+      <div class="form-group">
+        <input type="text" class="form-control" placeholder="Enter user name" autofocus [(ngModel)]='user.userMobile'
+          [ngModelOptions]="{standalone: true}" name='userMobile' required="required">
+      </div>
+      <div class="form-group">
+        <select required class="form-control" id="role" name="role" [(ngModel)]='user.userRole'>
+          <option value='SELECT_ROLE'>Select Role</option>
+          <option value='STIVI_ADMIN'>ADMIN</option>
+          <option value='STIVI_BUILDING'>BUILDING</option>
+          <option value='STIVI_TANANT'>TANANT</option>
+          <option value='STIVI_GROUP'>GROUP</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <input type="text" class="form-control" placeholder="Enter user created by" autofocus [(ngModel)]='user.userCreateBy'
+          [ngModelOptions]="{standalone: true}" name='userCreateBy' required="required">
+      </div>
+      <div class="form-group">
+        <button class="btn btn-warning btn-block btn-md" *ngIf='isUpdate' (click)='updateUser()'>Update user</button>
+      </div>
+    </form>
+  </div>
+</ng-template>

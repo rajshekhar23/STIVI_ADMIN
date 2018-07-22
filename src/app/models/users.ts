@@ -1,6 +1,10 @@
 export interface User {
   id: string;
-  firstname: string;
-  lastname: string;
-  mobileno: string;
+  userCreateBy: string;
+  userCreateDate: string;
+  userEmail: string;
+  userIsDeleted: string;
+  userMobile: number;
+  userName: string;
+  userRole: string;
 }

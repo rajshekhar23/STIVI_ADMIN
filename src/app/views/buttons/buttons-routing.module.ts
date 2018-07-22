@@ -1,4 +1,3 @@
-import { ListModelComponent } from './list-model/list-model.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { ListBrandComponent } from './list-brand/list-brand.component';
@@ -15,13 +14,6 @@ const routes: Routes = [
         component: ListBrandComponent,
         data: {
           title: 'List Brand'
-        }
-      },
-      {
-        path: 'list-model',
-        component: ListModelComponent,
-        data: {
-          title: 'List Model'
         }
       }
     ]

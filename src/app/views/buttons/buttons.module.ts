@@ -12,7 +12,6 @@ import { ListBrandComponent } from './list-brand/list-brand.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { DropdownsComponent } from './dropdowns.component';
 import { ButtonsComponent } from './buttons.component';
-import { ListModelComponent } from './list-model/list-model.component';
 // Angular
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { MultiselectDropdownModule } from 'angular-2-dropdown-multiselect';
@@ -30,8 +29,7 @@ import { MultiselectDropdownModule } from 'angular-2-dropdown-multiselect';
     ListBrandComponent,
     BrandButtonsComponent,
     DropdownsComponent,
-    ButtonsComponent,
-    ListModelComponent
+    ButtonsComponent
   ]
 })
 export class ButtonsModule { }

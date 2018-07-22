@@ -151,8 +151,8 @@ export class FirestoreDataService implements OnInit {
     return this.subServicesList;
   }
 
-  getVehicleMasterList(): Observable<any> {
-    this.vehiclesTypesList = this.afs.collection('vehicle').snapshotChanges()
+  getAllUsersList(): Observable<any> {
+    this.users = this.afs.collection('users').snapshotChanges()
     .map(actions => {
         return actions.map(action => {
           const data = action.payload.doc.data() as Vehicle;
@@ -160,7 +160,7 @@ export class FirestoreDataService implements OnInit {
           return { id, ...data };
         });
     });
-    return this.vehiclesTypesList;
+    return this.users;
   }
 
   getAllBrandByVehicleType(vehicleTypeId): any {
@@ -307,12 +307,18 @@ export class FirestoreDataService implements OnInit {
     });
   }
 
-  updateVehicleBrand(brandId, brandname, selectedType) {
+  updateUser(user) {
     let result: any;
-    this.afs.collection('vehicle').doc(selectedType)
-    .collection('brand').doc(brandId)
+    console.log(user);
+    this.afs.collection('users').doc(user.id)
     .set({
-      brandname: brandname
+      userName: user.userName,
+      userEmail: user.userEmail,
+      userMobile: user.userMobile,
+      userRole: user.userRole,
+      userCreateBy: user.userCreateBy,
+      userCreateDate: user.userCreateDate,
+      userModifiedAt: new Date().getTime()
     }).then( docRef => {
       result = 'success';
     }).catch( error => {

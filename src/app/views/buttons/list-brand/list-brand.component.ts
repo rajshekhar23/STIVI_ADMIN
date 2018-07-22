@@ -36,7 +36,6 @@ export class ListBrandComponent implements OnInit {
   modelId: string;
   brandId: string;
   variantId: string;
-  ngModelRef: any;
   isUpdate: any;
   selectedServices: Service[];
   selectedSubServices: SubService[];
@@ -45,6 +44,7 @@ export class ListBrandComponent implements OnInit {
   tempSubServiceList: any;
   $: any;
   selectedOptions: any;
+  ngModelRef: any;
 
   constructor(private _firestoreDataService: FirestoreDataService, private _loadingBar: SlimLoadingBarService,
   private modalService: NgbModal, private router: Router, private afs: AngularFirestore) { }
@@ -55,7 +55,7 @@ export class ListBrandComponent implements OnInit {
     this.isUpdate = false;
     this.selectedVehicleType = 'pM0luQDMCvCvDxJcedDn';
     this.loadServices();
-    this._firestoreDataService.getVehicleMasterList().subscribe( data => {
+    this._firestoreDataService.getAllUsersList().subscribe( data => {
       this.vehicleTypeList = data;
       this.getAllBrandByVehicleType();
     });
@@ -237,14 +237,14 @@ export class ListBrandComponent implements OnInit {
     }
     this.selectedServices = selectedServices;
   }
-  updateBrand() {
+/*   updateBrand() {
     this._firestoreDataService.updateVehicleBrand(this.brandId, this.brandname, this.selectedVehicleType);
     this.ngModelRef.close();
     this.brandId = '';
     this.selectedBrand = '';
     this.isUpdate = false;
   }
-
+ */
   updateModel() {
     this._firestoreDataService.updateModel(this.selectedVehicleType, this.selectedBrand, this.modelId, this.modelname);
     this.ngModelRef.close();
