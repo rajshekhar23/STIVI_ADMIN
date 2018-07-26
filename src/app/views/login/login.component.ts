@@ -37,19 +37,43 @@ export class LoginComponent implements OnInit {
 
   onLoginEmail(): void {
     this.clearErrorMessage();
-
     if (this.validateForm(this.email, this.password)) {
-      this.authService.loginWithEmail(this.email, this.password)
+      this._firestoreService.storeUserNameInLocalStorageFromEmail(this.email).subscribe( data => {
+        this.users = data;
+        if (!this.users[0].userIsDeleted) {
+          this.authService.loginWithEmail(this.email, this.password)
+          .then(() => {
+            console.log(this.users[0].userName);
+            if (this.users[0].userName != null) {
+              this.router.navigate(['/dashboard']);
+              this.checkIsAdmin(this.email);
+              localStorage.removeItem('username');
+              localStorage.setItem('username', this.users[0].userName);
+            }
+          });
+        } else {
+          this.error.message = 'User Id is deactivated';
+        }
+      });
+/*       this.authService.loginWithEmail(this.email, this.password)
         .then(() => {
-          this.router.navigate(['/dashboard']);
-          this.checkIsAdmin(this.email);
+          this._firestoreService.storeUserNameInLocalStorageFromEmail(this.email).subscribe( data => {
+            this.users = data;
+            console.log(this.users[0].userName);
+            if (this.users[0].userName != null) {
+              this.router.navigate(['/dashboard']);
+              this.checkIsAdmin(this.email);
+              localStorage.removeItem('username');
+              localStorage.setItem('username', this.users[0].userName);
+            }
+          });
         })
         .catch(_error => {
           this.error = _error;
           this.error.message = _error.code === 'auth/user-not-found' ? 'Invalid user ' : _error.message;
           this.router.navigate(['/']);
-        });
-    }
+        }); */
+      }
   }
 
   checkIsAdmin(email) {

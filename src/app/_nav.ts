@@ -15,5 +15,17 @@ export const navItems = [
         icon: 'icon-cursor'
       }
     ]
+  },
+  {
+    name: 'Group',
+    url: '/groupmaster',
+    icon: 'icon-cursor',
+    children: [
+      {
+        name: 'Group List',
+        url: '/groupmaster/list-group',
+        icon: 'icon-cursor'
+      }
+    ]
   }
 ];

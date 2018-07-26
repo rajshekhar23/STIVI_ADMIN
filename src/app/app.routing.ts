@@ -8,11 +8,12 @@ import { P404Component } from './views/error/404.component';
 import { P500Component } from './views/error/500.component';
 import { LoginComponent } from './views/login/login.component';
 import { RegisterComponent } from './views/register/register.component';
+import { DashboardComponent } from './views/dashboard/dashboard.component';
 
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'login',
+    redirectTo: 'login', //usersmaster/list-users
     pathMatch: 'full',
   },
   {
@@ -69,6 +70,10 @@ export const routes: Routes = [
       {
         path: 'usersmaster',
         loadChildren: './usersmaster/usersmaster.module#UsersmasterModule'
+      },
+      {
+        path: 'groupmaster',
+        loadChildren: './groupmaster/groupmaster.module#GroupmasterModule'
       },
       {
         path: 'usersmaster',

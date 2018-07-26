@@ -4,7 +4,10 @@
       <form (ngSubmit)="onSignUp()">
         <div class="row">
           <div class="col-md-12 mx-auto" *ngIf='!isAdmin'>
-            <p class='text-center'>Sorry, You don't have access to create user.<br><b>Please login as Admin.</b></p>
+            <p class='text-center'>Sorry, You don't have access to create user.
+              <br>
+              <b>Please login as Admin.</b>
+            </p>
           </div>
           <div class="col-md-12 mx-auto" *ngIf='isAdmin'>
             <div class="card-group">
@@ -17,52 +20,65 @@
                   <p *ngIf="error.message.length > 0" class="text-danger">
                     {{error.message}}</p>
 
-                  <div class="input-group mb-3">
+                  <div class="input-group mb-auto">
                     <div class="input-group-prepend">
-                      <span class="input-group-text">
-                        <i class="icon-user"></i>
-                      </span>
+                      <span class="input-group-text" id="basic-addon3">User ID ( Email)</span>
                     </div>
-                    <input type="text" class="form-control" id="username" name="username" required placeholder="Username" [(ngModel)]='username'>
+                    <input type="text" class="form-control" id="userId" name="userId" required placeholder="Enter user Id (email)" [(ngModel)]='userId'>
                   </div>
-                  <div class="input-group mb-3">
+                  <br>
+                  <div class="input-group mb-auto">
                     <div class="input-group-prepend">
-                      <span class="input-group-text">
-                        <i class="icon-user"></i>
-                      </span>
+                      <span class="input-group-text" id="basic-addon3">User Name</span>
                     </div>
-                    <input type="text" class="form-control" id="mobile" name="mobile" required placeholder="Mobile" [(ngModel)]='mobile'>
+                    <input type="text" class="form-control" id="userName" name="userName" required placeholder="Enter user name" [(ngModel)]='userName'>
                   </div>
-                  <div class="input-group mb-3">
+                  <br>
+                  <div class="input-group mb-auto">
                     <div class="input-group-prepend">
-                      <span class="input-group-text">
-                        <i class="icon-user"></i>
-                      </span>
+                      <span class="input-group-text" id="basic-addon3">User Role</span>
                     </div>
-                    <input type="text" class="form-control" id="email" name="email" required placeholder="Email" [(ngModel)]='email'>
-                  </div>
-                  <div class="input-group mb-4">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text">
-                        <i class="icon-user"></i>
-                      </span>
-                    </div>
-                    <input type="password" required class="form-control" id="password" name="password" placeholder="Password" [(ngModel)]='password'>
-                  </div>
-                  <div class="input-group mb-4">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text">
-                        <i class="icon-user"></i>
-                      </span>
-                    </div>
-                    <select required class="form-control" id="role" name="role" [(ngModel)]='role'>
+                    <select required class="form-control" id="role" name="role" [(ngModel)]='userRole'>
                       <option value='SELECT_ROLE'>Select Role</option>
                       <option value='STIVI_ADMIN'>ADMIN</option>
                       <option value='STIVI_BUILDING'>BUILDING</option>
-                      <option value='STIVI_TANANT'>TANANT</option>
+                      <option value='STIVI_TENANT'>TENANT</option>
                       <option value='STIVI_GROUP'>GROUP</option>
                     </select>
                   </div>
+                  <br>
+                  <div class="input-group mb-auto">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" id="basic-addon3">User Email</span>
+                    </div>
+                    <input type="text" class="form-control" id="email" name="email" required placeholder="Email" [(ngModel)]='userEmail'>
+                  </div>
+                  <br>
+                  <div class="input-group mb-auto">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" id="basic-addon3">User Mobile</span>
+                    </div>
+                    <input type="text" class="form-control" id="mobile" name="mobile" required placeholder="Mobile" [(ngModel)]='userMobile'>
+                  </div>
+                  <br>
+                  <div class="input-group mb-auto">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" id="basic-addon3">User Password</span>
+                    </div>
+                    <input type="password" required class="form-control" id="password" name="password" placeholder="Password" [(ngModel)]='password'>
+                  </div>
+                  <br>
+                  <div class="input-group mb-auto">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" id="basic-addon3">Is Deleted ?</span>
+                    </div>
+                    <select class="form-control" [(ngModel)]='userIsDeleted' [ngModelOptions]="{standalone: true}" name='userIsDeleted'
+                      required="required">
+                      <option value='Y'>Yes</option>
+                      <option value='N'>No</option>
+                    </select>
+                  </div>
+                  <br>
                   <div class="row">
                     <div class="col-6">
                       <button type="submit" class="btn btn-primary px-4">Register</button>

@@ -3,20 +3,25 @@
     <div class="col-lg-12">
       <div class="card">
         <div class="card-header">
-          <i class="fa fa-align-justify"></i> Vehicle user List
+          <i class="fa fa-align-justify"></i> Users List
         </div>
         <div class="card-body">
           <table class="table table-bordered table-striped table-condensed table-sm">
             <thead>
               <tr class='text-center'>
                 <td>No.</td>
+                <td>User Id</td>
                 <td>User Name</td>
+                <td>User Role</td>
                 <td>User Email</td>
                 <td>User Mobile</td>
-                <td>User Role</td>
-                <td>User Create By</td>
-                <td>User Create At</td>
+                <td>IsDeleted</td>
+                <td>Created Date</td>
+                <td>Created By</td>
+                <td>Updated By</td>
+                <td>Updated At</td>
                 <td>Edit</td>
+                <td>Remove</td>
               </tr>
             </thead>
             <tbody>
@@ -25,14 +30,24 @@
               </tr>
               <tr ng-if="usersList.length > 0" *ngFor="let row of usersList; let i = index" class='text-center'>
                 <td>{{i + 1}}</td>
-                <td>{{row.userName}}</td>
-                <td>{{row.userEmail}}</td>
-                <td>{{row.userMobile}}</td>
-                <td>{{row.userRole}}</td>
-                <td>{{row.userCreateBy}}</td>
-                <td>{{row.userCreateDate}}</td>
+                <td>{{ row.userId }}</td>
+                <td>{{ row.userName }}</td>
+                <td>{{ row.userRole === 'STIVI_ADMIN' ? 'ADMIN' :
+                    row.userRole === 'STIVI_BUILDING' ? 'BUILDING' :
+                    row.userRole === 'STIVI_TENANT' ? 'TENANT' :
+                    row.userRole === 'STIVI_TENANT' ? 'GROUP' : ''  }}</td>
+                <td>{{ row.userEmail }}</td>
+                <td>{{ row.userMobile }}</td>
+                <td>{{ row.userIsDeleted ? 'Yes' : 'No'}}</td>
+                <td>{{ row.userCreateDate }}</td>
+                <td>{{ row.userCreateBy }}</td>
+                <td>{{row.userUpdateBy }}</td>
+                <td>{{row.userUpdateDate }}</td>
                 <td (click)='editUser(row, content)' class='success'>
                   <i class="customIcons cui-pencil"></i>
+                </td>
+                <td (click)='removeUser(row)' class='success'>
+                  <i class="customIcons cui-circle-x" *ngIf='row.userIsDeleted'></i>
                 </td>
               </tr>
             </tbody>
@@ -53,31 +68,58 @@
   </div>
   <div class="modal-body">
     <form>
-      <div class="form-group">
-        <input type="text" class="form-control" placeholder="Enter user name" autofocus [(ngModel)]='user.userName'
-          [ngModelOptions]="{standalone: true}" name='userName' required="required">
+      <div class="input-group mb-auto">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="basic-addon3">User ID ( Email)</span>
+        </div>
+        <input type="text" class="form-control" id="userId" name="userId" required placeholder="Enter user Id (email)" [(ngModel)]='user.userId'>
       </div>
-      <div class="form-group">
-        <input type="text" class="form-control" [disabled]=true placeholder="Enter user name" autofocus [(ngModel)]='user.userEmail'
-          [ngModelOptions]="{standalone: true}" name='userEmail' required="required">
+      <br>
+      <div class="input-group mb-auto">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="basic-addon3">User Name</span>
+        </div>
+        <input type="text" class="form-control" id="userName" name="userName" required placeholder="Enter user name" [(ngModel)]='user.userName'>
       </div>
-      <div class="form-group">
-        <input type="text" class="form-control" placeholder="Enter user name" autofocus [(ngModel)]='user.userMobile'
-          [ngModelOptions]="{standalone: true}" name='userMobile' required="required">
-      </div>
-      <div class="form-group">
+      <br>
+      <div class="input-group mb-auto">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="basic-addon3">User Role</span>
+        </div>
         <select required class="form-control" id="role" name="role" [(ngModel)]='user.userRole'>
           <option value='SELECT_ROLE'>Select Role</option>
           <option value='STIVI_ADMIN'>ADMIN</option>
           <option value='STIVI_BUILDING'>BUILDING</option>
-          <option value='STIVI_TANANT'>TANANT</option>
+          <option value='STIVI_TENANT'>TENANT</option>
           <option value='STIVI_GROUP'>GROUP</option>
         </select>
       </div>
-      <div class="form-group">
-        <input type="text" class="form-control" placeholder="Enter user created by" autofocus [(ngModel)]='user.userCreateBy'
-          [ngModelOptions]="{standalone: true}" name='userCreateBy' required="required">
+      <br>
+      <div class="input-group mb-auto">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="basic-addon3">User Email</span>
+        </div>
+        <input type="text" class="form-control" id="email" name="email" required placeholder="Email" [(ngModel)]='user.userEmail'>
       </div>
+      <br>
+      <div class="input-group mb-auto">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="basic-addon3">User Mobile</span>
+        </div>
+        <input type="text" class="form-control" id="mobile" name="mobile" required placeholder="Mobile" [(ngModel)]='user.userMobile'>
+      </div>
+      <br>
+      <div class="input-group mb-auto">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="basic-addon3">Is Deleted ?</span>
+        </div>
+        <select class="form-control" [(ngModel)]='userIsDeleted' [ngModelOptions]="{standalone: true}" name='tenantIsDeleted'
+          required="required">
+          <option value='Y'>Yes</option>
+          <option value='N'>No</option>
+        </select>
+      </div>
+      <br>
       <div class="form-group">
         <button class="btn btn-warning btn-block btn-md" *ngIf='isUpdate' (click)='updateUser()'>Update user</button>
       </div>

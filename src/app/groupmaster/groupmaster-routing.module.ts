@@ -1,19 +1,19 @@
+import { ListGroupComponent } from './list-group/list-group.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { ListBrandComponent } from './list-brand/list-brand.component';
 
 const routes: Routes = [
   {
     path: '',
     data: {
-      title: 'Button Master'
+      title: 'Group Master'
     },
     children: [
       {
-        path: 'list-brand',
-        component: ListBrandComponent,
+        path: 'list-group',
+        component: ListGroupComponent,
         data: {
-          title: 'List Brand'
+          title: 'List Group'
         }
       }
     ]
@@ -24,4 +24,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class ButtonsRoutingModule {}
+export class GroupmasterRoutingModule { }

@@ -1,0 +1,333 @@
+<div class="animated fadeIn">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="card-body">
+          <div class='row'>
+            <div class='col-md-1'>
+              <label> Group </label>
+            </div>
+            <div class='col-md-3'>
+              <select class='form-control' [(ngModel)]="selectedGroup" (change)='getAllBuildingList()'>
+                <option value='4-Wheeler' *ngFor='let group of groupList' [value]='group.id'>{{group.groupName}}</option>
+              </select>
+            </div>
+            <div class='col-md-1'>
+              <label> Building </label>
+            </div>
+            <div class='col-md-3'>
+              <select class='form-control' [(ngModel)]="selectedBuilding" (change)='getAllTenantList()'>
+                <option *ngFor='let building of buildingList' [value]='building.id'>{{building.buildingName}}</option>
+              </select>
+            </div>
+            <div class='col-md-1'>
+              <label> Tenant </label>
+            </div>
+            <div class='col-md-3'>
+              <select class='form-control' [(ngModel)]="selectedTenant">
+                <option *ngFor='let tenant of tenantList' [value]='tenant.id'>{{tenant.tenantName}}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--/.col-->
+  </div>
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="card-header">
+          <i class="fa fa-align-justify"></i> Group List
+          <button type="button" class="btn btn-info add-new pull-right" (click)='openModal(groupModal)'>
+            <i class="fa fa-plus"></i> Add New </button>
+        </div>
+        <div class="card-body">
+          <table class="table table-bordered table-striped table-condensed table-sm">
+            <thead>
+              <tr class='text-center'>
+                <td>No.</td>
+                <td>Name</td>
+                <td>Created By</td>
+                <td>Updated By</td>
+                <td>Created Date</td>
+                <td>Updated Date</td>
+                <td>Is Deleted?</td>
+                <td>Edit</td>
+                <td>Remove</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngIf='isGroupListEmpty'>
+                <td colspan='12' class='text-center'>No records found</td>
+              </tr>
+              <tr ng-if="groupList.length > 0" *ngFor="let row of groupList; let i = index" class='text-center'>
+                <td>{{i + 1}}</td>
+                <td>{{row.groupName}}</td>
+                <td>{{row.groupCreateBy}}</td>
+                <td>{{row.groupUpdateBy}}</td>
+                <td>{{row.groupCreateDate}}</td>
+                <td>{{row.groupUpdateDate}}</td>
+                <td>{{ row.groupIsDeleted ? 'Yes':'No'}}</td>
+                <td (click)='editGroup(row, groupModal)'>
+                  <i class="customIcons cui-pencil"></i>
+                </td>
+                <td (click)='removeGroup(row)'>
+                  <i class="customIcons cui-circle-x" *ngIf='row.groupIsDeleted'></i>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <!--/.col-->
+  </div>
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="card-header">
+          <i class="fa fa-align-justify"></i> Building List
+          <button type="button" class="btn btn-info add-new pull-right" (click)='openModal(buildingModal)'>
+            <i class="fa fa-plus"></i> Add New</button>
+        </div>
+        <div class="card-body">
+          <table class="table table-bordered table-striped table-condensed table-sm">
+            <thead>
+              <tr class='text-center'>
+                <td>No.</td>
+                <td>Created By</td>
+                <td>Created Date</td>
+                <td>Is Deleted?</td>
+                <td>Name</td>
+                <td>Updated By</td>
+                <td>Updated Date</td>
+                <td>Work Hours</td>
+                <td>Edit</td>
+                <td>Remove</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngIf='isBuidlingListEmpty'>
+                <td colspan='12' class='text-center'>No records found</td>
+              </tr>
+              <tr ng-if="modelList.length > 0" *ngFor="let row of buildingList; let i = index" class='text-center'>
+                <td>{{i + 1}}</td>
+                <td>{{ row.buildingCreateBy }}</td>
+                <td>{{ row.buildingCreateDate }}</td>
+                <td>{{ row.buildingIsDeleted ? 'Yes':'No'}}</td>
+                <td>{{ row.buildingName }}</td>
+                <td>{{ row.buildingUpdateBy }}</td>
+                <td>{{ row.buildingUpdateDate }}</td>
+                <td>{{ row.buildingWorkHours}} </td>
+                <td (click)='editBuilding(row, buildingModal)'>
+                  <i class="customIcons cui-pencil"></i>
+                </td>
+                <td (click)='removeBuilding(row)'>
+                  <i class="customIcons cui-circle-x" *ngIf='row.buildingIsDeleted'></i>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <!--/.col-->
+  </div>
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="card-header">
+          <i class="fa fa-align-justify"></i> Tenant List
+          <button type="button" style='margin:0 4px;' class="btn btn-info add-new pull-right" (click)='openModal(tenantModal)'>
+            <i class="fa fa-plus"></i> Add New </button>
+        </div>
+        <div class="card-body">
+          <table class="table table-bordered table-striped table-condensed table-sm">
+            <thead>
+              <tr class='text-center'>
+                <td>No.</td>
+                <td>Name</td>
+                <td>Status</td>
+                <td>Visit Type</td>
+                <td>Work Hours</td>
+                <td>Created By</td>
+                <td>Created Date</td>
+                <td>Is Deleted?</td>
+                <td>Updated By</td>
+                <td>Updated Date</td>
+                <td>Edit</td>
+                <td>Remove</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngIf='isTenantListEmpty'>
+                <td colspan='12' class='text-center'>No records found</td>
+              </tr>
+              <tr ng-if="tenantList.length > 0" *ngFor="let row of tenantList; let i = index" class='text-center'>
+                <td>{{i + 1}}</td>
+                <td>{{ row.tenantName }}</td>
+                <td>{{ row.tenantStatus }}</td>
+                <td>{{ row.tenantVisitType }}</td>
+                <td>{{ row.tenantWorkHours }}</td>
+                <td>{{ row.tenantCreateBy }}</td>
+                <td>{{ row.tenantCreateDate }}</td>
+                <td>{{ row.tenantIsDeleted ? 'Yes':'No'}}</td>
+                <td>{{ row.tenantUpdateBy }}</td>
+                <td>{{ row.tenantUpdateDate }}</td>
+                <td (click)='editTenant(row, tenantModal)'>
+                  <i class="customIcons cui-pencil"></i>
+                </td>
+                <td (click)='removeTenant(row)'>
+                  <i class="customIcons cui-circle-x" *ngIf='row.tenantIsDeleted'></i>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <!--/.col-->
+  </div>
+
+</div>
+
+<!-- Modal -->
+<ng-template #groupModal let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <b *ngIf='isUpdate'>Update Group</b>
+    <b *ngIf='!isUpdate'>Add New Group</b>
+    <button type="button" class="close" (click)='closeModal()'>&times;</button>
+  </div>
+  <div class="modal-body">
+    <form>
+      <div class="input-group mb-auto">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="basic-addon3">Building Name</span>
+        </div>
+        <input type="text" class="form-control" placeholder="Enter Group name" autofocus [(ngModel)]='group.groupName' [ngModelOptions]="{standalone: true}"
+          name='Groupname' required="required">
+      </div>
+      <br>
+      <div class="input-group mb-auto">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="basic-addon3">Is Deleted ?</span>
+        </div>
+        <select class="form-control" [(ngModel)]='selectedGroupDeleted' [ngModelOptions]="{standalone: true}" name='buildingIsDeleted'
+          required="required">
+          <option value='Y'>Yes</option>
+          <option value='N'>No</option>
+        </select>
+      </div><br>
+      <div class="form-group">
+        <button class="btn btn-primary btn-block btn-md" *ngIf='!isUpdate' (click)='addNewGroup()'>Add Group</button>
+        <button class="btn btn-warning btn-block btn-md" *ngIf='isUpdate' (click)='updateGroup()'>Update Group</button>
+      </div>
+    </form>
+  </div>
+</ng-template>
+
+<ng-template #buildingModal let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <b *ngIf='isUpdate'>Update Building</b>
+    <b *ngIf='!isUpdate'>Add New Building</b>
+    <button type="button" class="close" (click)='closeModal()'>&times;</button>
+  </div>
+  <div class="modal-body">
+    <form>
+      <div class="input-group mb-auto">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="basic-addon3">Building Name</span>
+        </div>
+        <input type="text" class="form-control" placeholder="Enter building name" autofocus [(ngModel)]='building.buildingName' [ngModelOptions]="{standalone: true}"
+          name='buildingName' required="required">
+      </div>
+      <br>
+      <div class="input-group mb-auto">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="basic-addon3">Building Working Hours</span>
+        </div>
+        <input type="text" class="form-control" placeholder="Enter building Work Hours" autofocus [(ngModel)]='building.buildingWorkHours'
+          [ngModelOptions]="{standalone: true}" name='buildingWorkHours' required="required">
+      </div>
+      <br>
+      <div class="input-group mb-auto">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="basic-addon3">Is Deleted ?</span>
+        </div>
+        <select class="form-control" [(ngModel)]='selectedBuildingDeleted' [ngModelOptions]="{standalone: true}" name='buildingIsDeleted'
+          required="required">
+          <option value='Y'>Yes</option>
+          <option value='N'>No</option>
+        </select>
+      </div>
+      <br>
+      <div class="form-group">
+        <button class="btn btn-primary btn-block btn-md" *ngIf='!isUpdate' (click)='addNewBuilding()'>Add Group</button>
+        <button class="btn btn-warning btn-block btn-md" *ngIf='isUpdate' (click)='updateBuilding()'>Update Group</button>
+      </div>
+    </form>
+  </div>
+</ng-template>
+
+<ng-template #tenantModal let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <b *ngIf='isUpdate'>Update Tenant</b>
+    <b *ngIf='!isUpdate'>Add New Tenant</b>
+    <button type="button" class="close" (click)='closeModal()'>&times;</button>
+  </div>
+  <div class="modal-body">
+    <form>
+      <div class="input-group mb-auto">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="basic-addon3">Tenant Name</span>
+        </div>
+        <input type="text" class="form-control" placeholder="Enter tenant name" autofocus [(ngModel)]='tenant.tenantName' [ngModelOptions]="{standalone: true}"
+          name='tenantName' required="required">
+      </div>
+      <br>
+      <div class="input-group mb-auto">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="basic-addon3">Tenant Working Hours</span>
+        </div>
+        <input type="text" class="form-control" placeholder="Enter tenant Work Hours" autofocus [(ngModel)]='tenant.tenantWorkHours'
+          [ngModelOptions]="{standalone: true}" name='tenantWorkHours' required="required">
+      </div>
+      <br>
+      <div class="input-group mb-auto">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="basic-addon3">Is Deleted ?</span>
+        </div>
+        <select class="form-control" [(ngModel)]='selectedTenantDeleted' [ngModelOptions]="{standalone: true}" name='tenantIsDeleted'
+          required="required">
+          <option value='Y'>Yes</option>
+          <option value='N'>No</option>
+        </select>
+      </div>
+      <br>
+      <div class="input-group mb-auto">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="basic-addon3">Tenant Visit Type By</span>
+        </div>
+        <input type="text" class="form-control" placeholder="Enter tenant VisitType by" autofocus [(ngModel)]='tenant.tenantVisitType'
+          [ngModelOptions]="{standalone: true}" name='tenantVisitType' required="required">
+      </div>
+      <br>
+      <div class="input-group mb-auto">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="basic-addon3">Tenant Status</span>
+        </div>
+        <select class="form-control" [(ngModel)]='selectedTenantStatus' [ngModelOptions]="{standalone: true}" name='tenantStatus'
+          required="required">
+          <option value='Active'>Active</option>
+          <option value='Inactive'>Inactive</option>
+        </select>
+      </div>
+      <br>
+      <div class="form-group">
+        <button class="btn btn-primary btn-block btn-md" *ngIf='!isUpdate' (click)='addNewTenant()'>Add Tenant</button>
+        <button class="btn btn-warning btn-block btn-md" *ngIf='isUpdate' (click)='updateTenant()'>Update Tenant</button>
+      </div>
+    </form>
+  </div>
+</ng-template>

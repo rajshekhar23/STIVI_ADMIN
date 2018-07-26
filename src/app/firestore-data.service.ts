@@ -1,3 +1,4 @@
+import { Tenant } from './models/tenants';
 import { SlimLoadingBarService } from 'ng2-slim-loading-bar';
 import { Injectable, OnInit } from '@angular/core';
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from 'angularfire2/firestore';
@@ -9,6 +10,8 @@ import { Model } from './models/models';
 import 'rxjs/add/operator/map';
 import { Service } from './models/services';
 import { SubService } from './models/subServices';
+import { Building } from './models/buildings';
+import { User } from './models/users';
 
 @Injectable({
   providedIn: 'root'
@@ -18,6 +21,8 @@ export class FirestoreDataService implements OnInit {
   models: Observable<Model[]>;
   servicesList: Observable<Service[]>;
   subServicesList: Observable<SubService[]>;
+  buildingList: Observable<Building[]>;
+  tenantList: Observable<Tenant[]>;
   model: Model;
   users: any;
   private vehiclesTypesList: any;
@@ -56,23 +61,43 @@ export class FirestoreDataService implements OnInit {
     return this.users;
   }
 
-  registerUser(email, password, mobile, username, role) {
-    let result: any;
+  registerUser(userId, userName, userRole, userEmail, userMobile, userIsDeleted, userCreateDate,
+    userCreateBy): string {
+    const result = 'error';
     this.afs.collection('users')
     .add({
-        'userName': username,
-        'userRole': role,
-        'userEmail': email,
-        'userMobile': mobile,
-        'usetIsDeleted': 'N',
-        'userCreateDate': new Date().getTime(),
-        'userCreateBy': 'system'
+        'userId': userId,
+        'userName': userName,
+        'userRole': userRole,
+        'userEmail': userEmail,
+        'userMobile': userMobile,
+        'userIsDeleted': userIsDeleted,
+        'userCreateDate': userCreateDate,
+        'userCreateBy': userCreateBy
       })
     .then( docRef => {
-      result = 'success';
+      console.log('docRef', docRef.id);
+      return 'success';
     }).catch( error => {
-      result = 'Something went wrong';
+      console.log('error', error);
+      return 'error';
     });
+    return result;
+  }
+
+  storeUserNameInLocalStorageFromEmail(email): Observable<any> {
+    console.log(email);
+    this.users = this.afs.collection('users', ref => ref.where('userId', '==', email))
+    .snapshotChanges()
+    .map(actions => {
+        return actions.map(action => {
+          const data = action.payload.doc.data() as User;
+          console.log('data', data);
+          const id = action.payload.doc.id;
+          return { id, ...data };
+        });
+    });
+    return this.users;
   }
 
   getServicesList(selectedVehicleType): Observable<any> {
@@ -163,6 +188,65 @@ export class FirestoreDataService implements OnInit {
     return this.users;
   }
 
+  updateGroup(group, groupId) {
+    let result: any;
+    console.log(group);
+    this.afs.collection('groups').doc(groupId)
+    .set({
+      groupCreateBy: group.groupCreateBy,
+      groupCreateDate: group.groupCreateDate,
+      groupId: group.groupId,
+      groupIsDeleted: group.groupIsDeleted,
+      groupName: group.groupName,
+      groupUpdateBy: group.groupUpdateBy,
+      groupUpdateDate: group.groupUpdateDate
+    }).then( docRef => {
+      result = 'success';
+    }).catch( error => {
+      result = 'Something went wrong';
+    });
+  }
+
+  getAllGroupList(): Observable<any> {
+    this.users = this.afs.collection('groups').snapshotChanges()
+    .map(actions => {
+        return actions.map(action => {
+          const data = action.payload.doc.data() as Vehicle;
+          const id = action.payload.doc.id;
+          return { id, ...data };
+        });
+    });
+    return this.users;
+  }
+
+  getAllBuildingList(selectedGroup): Observable<any> {
+    this.buildingList = this.afs.collection('groups')
+    .doc(selectedGroup).collection('buildings')
+    .snapshotChanges()
+    .map(actions => {
+        return actions.map(action => {
+          const data = action.payload.doc.data() as Building;
+          const id = action.payload.doc.id;
+          return { id, ...data };
+        });
+    });
+    return this.buildingList;
+  }
+
+  getAllTenantList(selectedGroup, selectedBuilding) {
+    this.tenantList = this.afs.collection('groups')
+    .doc(selectedGroup).collection('buildings')
+    .doc(selectedBuilding).collection('tenants')
+    .snapshotChanges()
+    .map(actions => {
+        return actions.map(action => {
+          const data = action.payload.doc.data() as Tenant;
+          const id = action.payload.doc.id;
+          return { id, ...data };
+        });
+    });
+    return this.tenantList;
+  }
   getAllBrandByVehicleType(vehicleTypeId): any {
     this.allBrandsByVehicleType =  this.afs.collection('vehicle').doc(vehicleTypeId).collection('brand').snapshotChanges()
     .map( (actions, index) => {
@@ -238,6 +322,23 @@ export class FirestoreDataService implements OnInit {
     });
   }
 
+  addNewGroup(group) {
+    let result: any;
+    this.afs.collection('groups')
+    .add({
+      groupCreateBy: group.groupCreateBy,
+      groupCreateDate: group.groupCreateDate,
+      groupId: group.groupId,
+      groupIsDeleted: group.groupIsDeleted,
+      groupName: group.groupName
+    })
+    .then( docRef => {
+      result = 'success';
+    }).catch( error => {
+      result = 'Something went wrong';
+    });
+  }
+
   addVehicleBrand(brandValue, selectedVehicleType): void {
     let result: any;
     this.afs.collection('vehicle')
@@ -263,6 +364,25 @@ export class FirestoreDataService implements OnInit {
     });
   }
 
+  addNewBuilding(selectedGroup, building) {
+    let result: any;
+    this.afs.collection('groups')
+    .doc(selectedGroup).collection('buildings')
+    .add({
+      buildingCreateBy: building.buildingCreateBy,
+      buildingCreateDate: building.buildingCreateDate,
+      buildingIsDeleted: 'N',
+      buildingName: building.buildingName,
+      buildingWorkHours: building.buildingWorkHours,
+      buildingLocation: building.buildingLocation
+    })
+    .then( docRef => {
+      result = 'success';
+    }).catch( error => {
+      result = 'Something went wrong';
+    });
+  }
+
   addVehicleVariant(selectedVehicleType, brandId, modelId, variantname): void {
     let result: any;
     this.afs.collection('vehicle')
@@ -277,6 +397,26 @@ export class FirestoreDataService implements OnInit {
     });
   }
 
+  addNewTenant(selectedGroup, selectedBuilding, tenant) {
+    let result: any;
+    this.afs.collection('groups')
+    .doc(selectedGroup).collection('buildings')
+    .doc(selectedBuilding).collection('tenants')
+    .add({
+      tenantCreateBy: tenant.tenantCreateBy,
+      tenantCreateDate: tenant.tenantCreateDate,
+      tenantIsDeleted: tenant.tenantIsDeleted,
+      tenantName: tenant.tenantName,
+      tenantStatus: tenant.tenantStatus,
+      tenantVisitType: tenant.tenantVisitType,
+      tenantWorkHours: tenant.tenantWorkHours
+    })
+    .then( docRef => {
+      result = 'success';
+    }).catch( error => {
+      result = 'Something went wrong';
+    });
+  }
   addSubService(selectedService, subService): void {
     let result: any;
     this.afs.collection('service_master')
@@ -312,12 +452,16 @@ export class FirestoreDataService implements OnInit {
     console.log(user);
     this.afs.collection('users').doc(user.id)
     .set({
+      userId: user.userId,
       userName: user.userName,
       userEmail: user.userEmail,
       userMobile: user.userMobile,
       userRole: user.userRole,
       userCreateBy: user.userCreateBy,
       userCreateDate: user.userCreateDate,
+      userUpdateBy: user.userUpdateBy,
+      userUpdateDate: user.userUpdateDate,
+      userIsDeleted: user.userIsDeleted,
       userModifiedAt: new Date().getTime()
     }).then( docRef => {
       result = 'success';
@@ -385,6 +529,26 @@ export class FirestoreDataService implements OnInit {
     });
   }
 
+  updateBuilding(selectedGroup, building, buildingId) {
+    console.log(building);
+    let result: any;
+    this.afs.collection('groups')
+    .doc(selectedGroup).collection('buildings')
+    .doc(buildingId)
+    .set({
+      buildingCreateBy: building.buildingCreateBy,
+      buildingCreateDate: building.buildingCreateDate,
+      buildingIsDeleted: building.buildingIsDeleted,
+      buildingName: building.buildingName,
+      buildingUpdateBy: building.buildingUpdateBy,
+      buildingUpdateDate: building.buildingUpdateDate,
+      buildingWorkHours: building.buildingWorkHours
+    }).then( docRef => {
+      result = 'success';
+    }).catch( error => {
+      result = 'Something went wrong';
+    });
+  }
   updateVariant(selectedVehicleType, brandId, modelId, variantId, variantname) {
     let result: any;
     this.afs.collection('vehicle')
@@ -393,6 +557,30 @@ export class FirestoreDataService implements OnInit {
     .collection('variant').doc(variantId)
     .set({
       variantname: variantname
+    }).then( docRef => {
+      result = 'success';
+    }).catch( error => {
+      result = 'Something went wrong';
+    });
+  }
+
+  updateTenant(selectedGroup, selectedBuilding, tenant, tenantId) {
+    console.log(tenant);
+    console.log(tenantId);
+    let result: any;
+    this.afs.collection('groups')
+    .doc(selectedGroup).collection('buildings')
+    .doc(selectedBuilding).collection('tenants').doc(tenantId)
+    .set({
+      tenantCreateBy: tenant.tenantCreateBy,
+      tenantCreateDate: tenant.tenantCreateDate,
+      tenantIsDeleted: tenant.tenantIsDeleted,
+      tenantName: tenant.tenantName,
+      tenantStatus: tenant.tenantStatus,
+      tenantVisitType: tenant.tenantVisitType,
+      tenantWorkHours: tenant.tenantWorkHours,
+      tenantUpdateBy: tenant.tenantUpdateBy,
+      tenantUpdateDate: tenant.tenantUpdateDate
     }).then( docRef => {
       result = 'success';
     }).catch( error => {
@@ -411,6 +599,36 @@ export class FirestoreDataService implements OnInit {
     });
   }
 
+  removeGroup(groupId) {
+    let result: any;
+    this.afs.collection('groups')
+    .doc(groupId).delete().then( docRef => {
+      result = 'success';
+    }).catch( error => {
+      result = 'Something went wrong';
+    });
+  }
+
+  removeUser(userId) {
+    let result: any;
+    this.afs.collection('users')
+    .doc(userId).delete().then( docRef => {
+      result = 'success';
+    }).catch( error => {
+      result = 'Something went wrong';
+    });
+  }
+
+  removeBuilding(selectedGroup, selectedBuilding, buildingId) {
+    let result: any;
+    this.afs.collection('groups')
+    .doc(selectedGroup).collection('buildings')
+    .doc(selectedBuilding).delete().then( docRef => {
+      result = 'success';
+    }).catch( error => {
+      result = 'Something went wrong';
+    });
+  }
   removeModel(selectedVehicleType, brandId, modelId) {
     let result: any;
     this.afs.collection('vehicle')
@@ -429,6 +647,18 @@ export class FirestoreDataService implements OnInit {
     .doc(selectedVehicleType).collection('brand')
     .doc(brandId).collection('model').doc(modelId)
     .collection('variant').doc(variantId)
+    .delete().then( docRef => {
+      result = 'success';
+    }).catch( error => {
+      result = 'Something went wrong';
+    });
+  }
+
+  removeTenant(selectedGroup, selectedBuilding, tenantId) {
+    let result: any;
+    this.afs.collection('groups')
+    .doc(selectedGroup).collection('buildings')
+    .doc(selectedBuilding).collection('tenants').doc(tenantId)
     .delete().then( docRef => {
       result = 'success';
     }).catch( error => {

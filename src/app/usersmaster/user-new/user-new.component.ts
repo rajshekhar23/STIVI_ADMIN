@@ -10,24 +10,29 @@ import { NgbCalendarIslamicUmalqura } from '../../../../node_modules/@ng-bootstr
   styleUrls: ['./user-new.component.scss']
 })
 export class UserNewComponent implements OnInit {
-
+  userId: any;
+  userName: any;
+  userRole: any;
+  userEmail: any;
+  userMobile: any;
+  userIsDeleted: any;
+  userCreateDate: any;
+  userCreateBy: any;
   isNewUser = true;
-  email = '';
-  public username: string;
-  mobile: '';
-  password = '';
-  role: string;
+  isUserDeleted: any;
+  password: any;
   errorMessage = '';
   isAdmin: any;
   error: { name: string, message: string } = { name: '', message: '' };
   resetPassword = false;
 
   constructor(private authService: AuthService, private router: Router, private _firestoreDataService: FirestoreDataService) {
-      this.role = 'SELECT_ROLE';
-   }
+  }
 
   ngOnInit() {
+    this.userRole = '';
     this.isAdmin = false;
+    this.isUserDeleted = 'N';
     if (localStorage.getItem('isAdmin') === 'TRUE') {
       this.isAdmin = true;
     } else {
@@ -42,36 +47,40 @@ export class UserNewComponent implements OnInit {
 
   onSignUp(): void {
     this.clearErrorMessage();
-    if (this.validateForm(this.email, this.password, this.mobile, this.username)) {
-       this.authService.signUpWithEmail(this.email, this.password)
+    if (this.validateForm(this.userId, this.password)) {
+      this.userCreateBy = localStorage.getItem('username');
+      this.userCreateDate = new Date().getTime();
+      console.log(this.userId);
+      console.log(this.userName);
+      console.log(this.userRole);
+      console.log(this.userEmail);
+      console.log(this.userMobile);
+      console.log(this.userIsDeleted);
+      console.log(this.userCreateDate);
+      console.log(this.userCreateBy);
+      this.authService.signUpWithEmail(this.userId, this.password)
         .then(() => {
-          this._firestoreDataService.registerUser(this.email, this.password, this.mobile, this.username, this.role);
-          this.clearAll();
+          this._firestoreDataService.registerUser(this.userId, this.userName, this.userRole,
+            this.userEmail, this.userMobile, this.userIsDeleted, this.userCreateDate, this.userCreateBy);
+          this.router.navigate(['/dashboard']);
         }).catch(_error => {
           this.error = _error;
-          this.router.navigate(['/']);
         });
      }
   }
 
   clearAll() {
-    this.username = '';
-    this.email = '';
-    this.password = '';
-    this.mobile = '';
+    this.userId = '';
+    this.userName = '';
+    this.userRole = '';
+    this.userEmail = '';
+    this.userMobile = '';
+    this.userIsDeleted = '';
+    this.userCreateDate = '';
+    this.userCreateBy = '';
   }
 
-  validateForm(email: string, password: string, mobile: string, username: string): boolean {
-/*     if (username.length === 0) {
-      this.errorMessage = 'Please enter Username!';
-      return false;
-    }
-
-    if (mobile.length === 0) {
-      this.errorMessage = 'Please enter Mobile!';
-      return false;
-    }
- */
+  validateForm(email: string, password: string): boolean {
     if (email.length === 0) {
       this.errorMessage = 'Please enter Email!';
       return false;

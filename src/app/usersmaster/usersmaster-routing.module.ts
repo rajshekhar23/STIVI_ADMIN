@@ -7,7 +7,7 @@ const routes: Routes = [
   {
     path: '',
     data: {
-      title: 'Vehicle Master'
+      title: 'User Master'
     },
     children: [
       {
